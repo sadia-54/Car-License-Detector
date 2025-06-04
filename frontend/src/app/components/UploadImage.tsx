@@ -4,30 +4,53 @@ import { useRef, useState } from 'react';
 
 export default function UploadImage() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [previewURL, setPreviewURL] = useState<string | null>(null);
+  const [selectedPreviewURL, setSelectedPreviewURL] = useState<string | null>(null);
+  const [predictedImageURL, setPredictedImageURL] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setSelectedImage(file);
-      setPreviewURL(URL.createObjectURL(file));
+      setSelectedPreviewURL(URL.createObjectURL(file));
+      setPredictedImageURL(null); 
     }
   };
 
-//   const handleSubmit = (e: React.FormEvent) => {
-//     e.preventDefault();
-//     if (!selectedImage) {
-//       alert('Please select an image first!');
-//       return;
-//     }
-
-//     alert('Image ready to be sent to backend!');
-//   };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedImage) {
+      alert('Please select an image first!');
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append('image', selectedImage);
+  
+    try {
+      const response = await fetch('http://localhost:5000/predict', {
+        method: 'POST',
+        body: formData,
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to get prediction');
+      }
+  
+      const blob = await response.blob();
+      const imageUrl = URL.createObjectURL(blob);
+      setPredictedImageURL(imageUrl); 
+  
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Error during prediction');
+    }
+  };
+  
 
   return (
     <div className="flex flex-col items-center p-6">
-      <form  className="w-full max-w-md space-y-4">
+      <form onSubmit={handleSubmit} className="w-full max-w-md space-y-4">
         {/* Hidden input */}
         <input
           type="file"
@@ -38,19 +61,18 @@ export default function UploadImage() {
         />
 
         {/* Button to trigger file input */}
-        <button
-          type="button"
+        <h2
           onClick={() => fileInputRef.current?.click()}
-          className="bg-red-300 hover:bg-red-400 text-black cursor-pointer font-semibold py-2 px-4 rounded-lg transition duration-200"
+          className=" text-red-300 cursor-pointer font-semibold py-2 px-4 rounded-lg transition duration-200"
         >
           Choose Image
-        </button>
+        </h2>
 
-        {/* Image Preview */}
-        {previewURL && (
+          {/* Selected Image Preview */}
+          {selectedPreviewURL && (
           <img
-            src={previewURL}
-            alt="Image Preview"
+            src={selectedPreviewURL}
+            alt="Selected Image Preview"
             className="w-full rounded-lg shadow-lg"
           />
         )}
@@ -65,6 +87,19 @@ export default function UploadImage() {
           </button>
         )}
       </form>
+
+  {/* Predicted Image Preview below the form */}
+  {predictedImageURL && (
+        <div className="mt-6 w-full max-w-md">
+          <h3 className="text-red-300 font-semibold mb-2">Predicted Image:</h3>
+          <img
+            src={predictedImageURL}
+            alt="Predicted Result"
+            className="w-full rounded-lg shadow-lg"
+          />
+        </div>
+      )}
+
     </div>
   );
 }
