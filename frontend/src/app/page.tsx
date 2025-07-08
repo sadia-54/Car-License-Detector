@@ -13,7 +13,7 @@ export default function Home() {
     <div className="flex flex-col text-center items-center mx-[20%] my-[20px]">
 
       <h1 className="text-5xl font-bold text-center mt-30 text-red-300">
-      AI-Powered Car License Plate Recognition!
+      Car License Plate Recognition!
       </h1>
       <p className="text-xl text-center mt-10 text-red-300">
       Upload an image of any vehicle and get the license plate number detected in seconds using advanced AI technology.
