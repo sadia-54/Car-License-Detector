@@ -27,7 +27,7 @@ def predict():
     image.save(temp_path)
 
     # Run YOLOv8 prediction
-    results = model.predict(source=temp_path, conf=0.005)
+    results = model.predict(source=temp_path, conf=0.5)
     result_image = results[0].plot()  # Get visualized image
 
     # Convert image to send back
