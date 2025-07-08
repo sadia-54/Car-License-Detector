@@ -9,8 +9,8 @@ A full-stack web application that detects car license plates from uploaded image
 ## 📸 Demo
 
 <p float="left">
-  <img src="screenshots/upload.jpg" width="300" alt="Upload Image">
-  <img src="screenshots/predicted.jpg" width="300" alt="Predicted Result">
+  <img src="screenshots/uploaded.jpeg" width="300" alt="Upload Image">
+  <img src="screenshots/predicted.jpeg" width="300" alt="Predicted Result">
 </p>
 
 > ✨ The predicted license plate is highlighted by YOLOv8 and displayed below the uploaded image.
@@ -56,3 +56,18 @@ pip install -r requirements.txt
 
 # Run the Flask server
 python app.py
+
+```
+
+### 🔹 Frontend (Next.js + Tailwind CSS)
+
+```bash
+cd ../frontend
+
+# Install dependencies
+npm install
+
+# Run the Next.js app
+npm run dev
+```
+
